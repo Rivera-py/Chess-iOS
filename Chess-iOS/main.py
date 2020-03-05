@@ -1,24 +1,26 @@
 from scene import *
 from ui import Path
 #Importing starting positions
-from new_game import new_game
+from new_game import current_board, is_select
+from board_spacing import give_tile_location
 
 
 #This class will be called for each tile
 class Tile (ShapeNode):
 	#Args will be board coords (x, y) s.t. 0 <= x, y <= 7
-	#and a dictionary containing piece info
-	def __init__(self, coords, piece):
+	def __init__(self, coords, location, piece, light):
+		self.coords = coords
+		self.location = location
+		self.piece = piece
+		self.light = light
 		square = Path.rect(0, 0, t_lth, t_lth)
-		centre = (x_0 + coords[0] * t_lth, y_0 + coords[1] * t_lth)
 		#Creates lattice effect
 		if sum(coords) % 2 == 0:
 			tile_colour = '#3e3e3e'
 		else:
 			tile_colour = '#d3d3d3'
 		#Creates square
-		ShapeNode.__init__(self, square, tile_colour, '#adadad', position=centre)
-		self.piece = piece
+		ShapeNode.__init__(self, square, tile_colour, '#adadad', position=location)
 		#Below decides whether there is a piece and it's info
 		if self.piece["type"] == "p":
 			self.position_chg = -0.05
@@ -32,21 +34,25 @@ class Tile (ShapeNode):
 		elif self.piece["side"] == "b":
 			self.marker = LabelNode(piece["type"],('Academy Engraved LET', t_lth), color='black', position=(0, t_lth * self.position_chg))
 			self.add_child(self.marker)
+		#Decides whether the square lights up or not (during move selection)
+		if self.light == True:
+			self.light_square = ShapeNode(square, "#2f77ff", "#300cdd", position = (0,0), alpha = 0.3)
+			self.add_child(self.light_square)
 
 
 #The root node
 class Board (Scene):
 	def setup(self):
-		#The global variables deciding the size of each tile
-		global b_lth, t_lth, x_0, y_0
+		#The global variable deciding the size of each tile
+		global t_lth
 		self.background_color = '#7d07c1'
-		b_lth = self.size.y * 0.6
-		t_lth = b_lth / 8
-		x_0 = self.size.x / 2 - b_lth / 2 + t_lth / 2
-		y_0 = self.size.y / 2 - b_lth / 2 + t_lth / 2
+		t_lth = 3 / 40 * self.size.y
 		#Instantiating each tile
-		for tile in new_game:
-			self.cell = Tile(tile[0], tile[1])
-			self.add_child(self.cell)
+		for rank in range(8):
+			for file in range(8):
+				cell_coords, cell_piece, cell_light = current_board[rank][file]
+				cell = Tile(cell_coords, give_tile_location(cell_coords, self.size, t_lth), cell_piece, cell_light)
+				self.add_child(cell)
+
 
 run(Board(), PORTRAIT)
