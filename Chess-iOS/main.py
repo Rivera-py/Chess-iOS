@@ -88,7 +88,8 @@ class Board (Scene):
 			for file in range(8):
 				cell_coords, cell_piece, cell_light = current_board[rank][file]
 				cell = Tile(
-					cell_coords, give_tile_location(cell_coords, self.size, t_lth), 
+					cell_coords, 
+					give_tile_location(cell_coords, self.size, t_lth), 
 					cell_piece, 
 					cell_light
 				)
@@ -103,9 +104,9 @@ class Board (Scene):
 	
 	#Changes board info according to a moving piece
 	def move_piece(self, pt_1, pt_2):
-		current_board[pt_2[0]][pt_2[1]][1] = deepcopy(current_board[pt_1[0]][pt_1[1]][1])
+		
+		current_board[pt_2[0]][pt_2[1]][1], current_board[pt_1[0]][pt_1[1]][1] = current_board[pt_1[0]][pt_1[1]][1], empty
 		current_board[pt_2[0]][pt_2[1]][1]["counter"] += 1
-		current_board[pt_1[0]][pt_1[1]][1] = empty
 		
 	
 	def touch_began(self, touch):
