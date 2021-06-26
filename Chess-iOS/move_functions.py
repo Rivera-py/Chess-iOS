@@ -89,7 +89,7 @@ def possible_moveset(coords, board, side):
 	start = [(rank, file)]
 	
 	if piece["side"] != side:
-		return moveset
+		return start
 	
 	if piece["type"] == "p":
 		return start + pawn(coords, board)
