@@ -25,7 +25,7 @@ class Tile (ShapeNode):
 		#Creates square
 		ShapeNode.__init__(self, square, tile_colour, '#adadad', position=location)
 		
-		#Below decides whether there is a piece and it's info
+		#Below decides whether there is a piece and its info
 		if self.piece["type"] == "p":
 			self.position_chg = -0.05
 		else:
@@ -33,16 +33,33 @@ class Tile (ShapeNode):
 			
 		if piece["side"] == "n":
 			pass
+			
 		elif self.piece["side"] == "w":
-			self.marker = LabelNode(piece["type"],('Academy Engraved LET', t_lth), color='white', position=(0, t_lth * self.position_chg))
+			self.marker = LabelNode(
+				piece["type"],
+				('Academy Engraved LET', t_lth), 
+				color='white', 
+				position=(0, t_lth * self.position_chg))
 			self.add_child(self.marker)
+			
 		elif self.piece["side"] == "b":
-			self.marker = LabelNode(piece["type"],('Academy Engraved LET', t_lth), color='black', position=(0, t_lth * self.position_chg))
+			self.marker = LabelNode(
+				piece["type"],
+				('Academy Engraved LET', t_lth), 
+				color='black', 
+				position=(0, t_lth * self.position_chg)
+			)
 			self.add_child(self.marker)
 			
 		#Decides whether the square lights up or not (during move selection)
 		if self.light == True:
-			self.light_square = ShapeNode(square, "#2f77ff", "#300cdd", position = (0,0), alpha = 0.3)
+			self.light_square = ShapeNode(
+				square, 
+				"#2f77ff", 
+				"#300cdd", 
+				position = (0,0), 
+				alpha = 0.3
+			)
 			self.add_child(self.light_square)
 
 
@@ -51,6 +68,7 @@ class Board (Scene):
 	def setup(self):
 		#The global variable deciding the size of each tile
 		global t_lth
+		
 		self.background_color = '#7d07c1'
 		t_lth = 3 / 40 * self.size.y
 		#Cycles the turn
@@ -69,7 +87,11 @@ class Board (Scene):
 		for rank in range(8):
 			for file in range(8):
 				cell_coords, cell_piece, cell_light = current_board[rank][file]
-				cell = Tile(cell_coords, give_tile_location(cell_coords, self.size, t_lth), cell_piece, cell_light)
+				cell = Tile(
+					cell_coords, give_tile_location(cell_coords, self.size, t_lth), 
+					cell_piece, 
+					cell_light
+				)
 				self.add_child(cell)
 	
 	
@@ -94,6 +116,7 @@ class Board (Scene):
 		
 		#Selects a piece
 		if is_select == False:
+			
 			if len(possible_moveset(coords, current_board, self.turn)) > 1:
 				for index in possible_moveset(coords, current_board, self.turn):
 					current_board[index[0]][index[1]][2] = True
@@ -103,7 +126,8 @@ class Board (Scene):
 		
 		#Either moves or deselects a piece
 		elif is_select == True:
-			if coords in possible_moveset(self.selected_coords, current_board, self.turn):
+			
+			if coords in possible_moveset(self.selected_coords, current_board, self.turn) and coords != self.selected_coords:
 				self.move_piece(self.selected_coords, coords)
 				self.turn_counter += 1
 				self.lights_off()
