@@ -4,6 +4,7 @@ from new_game import current_board, is_select, empty, selected_coords
 from board_spacing import give_tile_location
 from move_functions import possible_moveset
 from copy import deepcopy
+import numpy as np
 
 
 #This class will be called for each tile
@@ -78,36 +79,29 @@ class Board (Scene):
 		#Creates initial board
 		self.update_board()
 	
-	
 	#Instantiating each tile
 	def update_board(self):
 		for cell in self.children:
 			cell.remove_from_parent()
 			
-		for rank in range(8):
-			for file in range(8):
-				cell_coords, cell_piece, cell_light = current_board[rank][file]
-				cell = Tile(
-					cell_coords, 
-					give_tile_location(cell_coords, self.size, t_lth), 
-					cell_piece, 
-					cell_light
-				)
-				self.add_child(cell)
-	
+		for rank, file in np.ndindex((8, 8)):
+			cell_coords, cell_piece, cell_light = current_board[rank][file]
+			cell = Tile(
+				cell_coords, 
+				give_tile_location(cell_coords, self.size, t_lth), 
+				cell_piece, 
+				cell_light
+			)
+			self.add_child(cell)
 	
 	def lights_off(self):
-		for rank in range(8):
-			for file in range(8):
-				current_board[rank][file][2] = False
-	
+		for rank, file in np.ndindex((8,8)):
+			current_board[rank][file][2] = False
 	
 	#Changes board info according to a moving piece
 	def move_piece(self, pt_1, pt_2):
-		
 		current_board[pt_2[0]][pt_2[1]][1], current_board[pt_1[0]][pt_1[1]][1] = current_board[pt_1[0]][pt_1[1]][1], empty
 		current_board[pt_2[0]][pt_2[1]][1]["counter"] += 1
-		
 	
 	def touch_began(self, touch):
 		global side, is_select, selected_coords
