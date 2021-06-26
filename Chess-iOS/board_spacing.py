@@ -5,7 +5,7 @@ import numpy as np
 def give_tile_location(coords, size, t_lth):
 	
 	coords, ones, dim = (
-	  np.array(coords),
+	  np.array(coords[::-1]),
 	  np.ones(2),
 	  np.array(size)
 	)
@@ -16,4 +16,4 @@ def give_tile_location(coords, size, t_lth):
 	return tuple(position)
 
 if __name__ == "__main__":
-	print(give_tile_location([0,0], 400, 50))
+	print(give_tile_location([1,0], 400, 50))
